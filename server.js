@@ -10,6 +10,7 @@ const AuthController = require("./src/controllers/AuthController")
 const UserController = require("./src/controllers/UserController")
 const AdressController = require("./src/controllers/AdressController")
 const CategoryController = require("./src/controllers/CategoryController")
+const OrderController = require("./src/controllers/OrderController")
 
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(bodyParser.json())
@@ -37,6 +38,12 @@ app.get("/category/:id", verifyJWT, CategoryController.get)
 app.post("/category", verifyJWT, CategoryController.save)
 app.put("/category/:id", verifyJWT, CategoryController.save)
 app.delete("/category/:id", verifyJWT, CategoryController.delete)
+
+app.get("/order", verifyJWT, OrderController.list)
+app.get("/order/:id", verifyJWT, OrderController.get)
+app.post("/order/", verifyJWT, OrderController.save)
+app.put("/order/:id", verifyJWT, OrderController.save)
+app.delete("/order/:id", verifyJWT, OrderController.delete)
 
 // Global error handler - route handlers/middlewares which throw end up here
 app.use((err, req, res, next) => {
