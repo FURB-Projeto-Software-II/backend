@@ -53,7 +53,7 @@ exports.login = async (req, res) => {
 exports.register = async (req, res) => {
 
     try {
-        let { email, password, name } = req.body
+        let { email, password, name, cpf, cnpj } = req.body
 
         if(await findUserByEmail(email) != null) {
             res.status(502).send("E-mail ja cadastrado")
@@ -62,7 +62,7 @@ exports.register = async (req, res) => {
     
         password = passwordHash.generate(password)
     
-        let user = await User.create({ email, password, name })
+        let user = await User.create({ email, password, name, cpf, cnpj })
     
         const token = jwt.sign({ id: user.id }, env.secret, { 
             expiresIn: 3600 // 1 hour 

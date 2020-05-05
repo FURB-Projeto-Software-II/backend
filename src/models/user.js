@@ -24,7 +24,7 @@ const AdressSchema = new mongoose.Schema({
 	},
 })
 
-mongoose.model("Adress", AdressSchema)
+//mongoose.model("Adress", AdressSchema)
 
 const UserSchema = new mongoose.Schema({
 	name: {
@@ -36,6 +36,14 @@ const UserSchema = new mongoose.Schema({
 		require: true,
 	},
 	password: {
+		type: String,
+		require: true,
+	},
+	cpf: {
+		type: String,
+		require: true,
+	},
+	cnpj: {
 		type: String,
 		require: true,
 	},
