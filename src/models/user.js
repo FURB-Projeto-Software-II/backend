@@ -24,7 +24,7 @@ const AdressSchema = new mongoose.Schema({
 	},
 })
 
-//mongoose.model("Adress", AdressSchema)
+mongoose.model("Adress", AdressSchema)
 
 const UserSchema = new mongoose.Schema({
 	name: {
