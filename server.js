@@ -17,6 +17,9 @@ app.use(cors)
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(bodyParser.json())
 
+console.log("MONGO_URL", process.env.MONGO_URL)
+console.log("PORT", process.env.PORT)
+
 mongoose.connect(process.env.MONGO_URL, { 
     useNewUrlParser: true, 
     useUnifiedTopology: true 
