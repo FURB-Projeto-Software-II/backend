@@ -2,7 +2,7 @@ const express = require("express")
 const bodyParser = require("body-parser")
 const mongoose = require("mongoose")
 const jwt = require('jsonwebtoken')
-const env = require("./src/env")
+const cors = require('cors')
 
 const app = express()
 
@@ -12,10 +12,11 @@ const AdressController = require("./src/controllers/AdressController")
 const CategoryController = require("./src/controllers/CategoryController")
 const OrderController = require("./src/controllers/OrderController")
 
+app.use(cors)
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(bodyParser.json())
 
-mongoose.connect("mongodb+srv://root:root@cluster0-qmd8d.mongodb.net/test?retryWrites=true&w=majority", { 
+mongoose.connect(process.env.MONGO_URL, { 
     useNewUrlParser: true, 
     useUnifiedTopology: true 
 })
@@ -56,7 +57,7 @@ function verifyJWT(req, res, next) {
     if (!token) 
         return res.status(401).send({ auth: false, message: 'Token não informado.' })
     
-    jwt.verify(token, env.secret, function(err, decoded) { 
+    jwt.verify(token, process.env.SECRET_JWT_KEY, function(err, decoded) { 
         if (err) 
             return res.status(500).send({ auth: false, message: 'Token inválido.' })
         
@@ -65,4 +66,4 @@ function verifyJWT(req, res, next) {
     })
 }   
 
-app.listen(3001)
+app.listen(process.env.PORT || 3001)

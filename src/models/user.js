@@ -39,6 +39,14 @@ const UserSchema = new mongoose.Schema({
 		type: String,
 		require: true,
 	},
+	cpf: {
+		type: String,
+		require: true,
+	},
+	cnpj: {
+		type: String,
+		require: true,
+	},
 	adresses: [
 		AdressSchema
 		/*{

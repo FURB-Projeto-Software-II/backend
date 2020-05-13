@@ -2,7 +2,6 @@ const mongoose = require("mongoose")
 const requireDir = require("require-dir")
 const jwt = require('jsonwebtoken')
 const passwordHash = require('password-hash')
-const env = require("./../env")
 
 requireDir("./../models")
 
@@ -53,7 +52,7 @@ exports.login = async (req, res) => {
 exports.register = async (req, res) => {
 
     try {
-        let { email, password, name } = req.body
+        let { email, password, name, cpf, cnpj } = req.body
 
         if(await findUserByEmail(email) != null) {
             res.status(502).send("E-mail ja cadastrado")
@@ -62,9 +61,9 @@ exports.register = async (req, res) => {
     
         password = passwordHash.generate(password)
     
-        let user = await User.create({ email, password, name })
+        let user = await User.create({ email, password, name, cpf, cnpj })
     
-        const token = jwt.sign({ id: user.id }, env.secret, { 
+        const token = jwt.sign({ id: user.id }, process.env.SECRET_JWT_KEY, { 
             expiresIn: 3600 // 1 hour 
         }); 
     
