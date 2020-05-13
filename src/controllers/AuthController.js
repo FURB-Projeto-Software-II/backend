@@ -2,7 +2,6 @@ const mongoose = require("mongoose")
 const requireDir = require("require-dir")
 const jwt = require('jsonwebtoken')
 const passwordHash = require('password-hash')
-const env = require("./../env")
 
 requireDir("./../models")
 
@@ -64,7 +63,7 @@ exports.register = async (req, res) => {
     
         let user = await User.create({ email, password, name, cpf, cnpj })
     
-        const token = jwt.sign({ id: user.id }, env.secret, { 
+        const token = jwt.sign({ id: user.id }, process.env.SECRET_JWT_KEY, { 
             expiresIn: 3600 // 1 hour 
         }); 
     
