@@ -67,4 +67,7 @@ function verifyJWT(req, res, next) {
     })
 }   
 */
-app.listen(process.env.PORT || 3001)
+app.listen(process.env.PORT || 3001), function() {
+    var port = server.address().port;
+    console.log("Express is working on port " + port);
+}
