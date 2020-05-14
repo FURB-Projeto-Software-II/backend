@@ -7,24 +7,24 @@ require('dotenv').config()
 
 const app = express()
 
-/*const AuthController = require("./src/controllers/AuthController")
+const AuthController = require("./src/controllers/AuthController")
 const UserController = require("./src/controllers/UserController")
 const AdressController = require("./src/controllers/AdressController")
 const CategoryController = require("./src/controllers/CategoryController")
-const OrderController = require("./src/controllers/OrderController")*/
+const OrderController = require("./src/controllers/OrderController")
 
-app.use(cors)
+//app.use(cors)
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(bodyParser.json())
 
-/*mongoose.connect(process.env.MONGO_URL, { 
+mongoose.connect(process.env.MONGO_URL, { 
     useNewUrlParser: true, 
     useUnifiedTopology: true 
-})*/
+})
 
 app.get("/", (req, res) => res.send("Ola Mundo"))
 
-/*app.post("/auth/login", AuthController.login)
+app.post("/auth/login", AuthController.login)
 app.post("/auth/register", AuthController.register)
 
 app.get("/user", verifyJWT, UserController.get)
@@ -66,8 +66,5 @@ function verifyJWT(req, res, next) {
         next()
     })
 }   
-*/
-app.listen(process.env.PORT || 3001), function() {
-    var port = server.address().port;
-    console.log("Express is working on port " + port);
-}
+
+app.listen(process.env.PORT || 3001)
