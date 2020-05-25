@@ -24,28 +24,34 @@ mongoose.connect(process.env.MONGO_URL, {
 
 app.get("/", (req, res) => res.send("Ola Mundo"))
 
+// AUTH ROTES
 app.post("/auth/login", AuthController.login)
 app.post("/auth/register", AuthController.register)
 
+// USER ROTES
 app.get("/user", verifyJWT, UserController.get)
 
+// ADRESS ROTES
 app.get("/user/adress", verifyJWT, AdressController.list)
 app.get("/user/adress/:id", verifyJWT, AdressController.get)
 app.post("/user/adress", verifyJWT, AdressController.save)
 app.put("/user/adress/:id", verifyJWT, AdressController.save)
 app.delete("/user/adress/:id", verifyJWT, AdressController.delete)
 
+// CATEGORY ROTES
 app.get("/category", verifyJWT, CategoryController.list)
 app.get("/category/:id", verifyJWT, CategoryController.get)
 app.post("/category", verifyJWT, CategoryController.save)
 app.put("/category/:id", verifyJWT, CategoryController.save)
 app.delete("/category/:id", verifyJWT, CategoryController.delete)
 
+// ORDER ROTES
 app.get("/order", verifyJWT, OrderController.list)
 app.get("/order/:id", verifyJWT, OrderController.get)
 app.post("/order/", verifyJWT, OrderController.save)
 app.put("/order/:id", verifyJWT, OrderController.save)
 app.delete("/order/:id", verifyJWT, OrderController.delete)
+app.put("/order/received/:id", verifyJWT, OrderController.received)
 
 // Global error handler - route handlers/middlewares which throw end up here
 app.use((err, req, res, next) => {
@@ -55,12 +61,10 @@ app.use((err, req, res, next) => {
 
 function verifyJWT(req, res, next) { 
     var token = req.headers['authorization']
-    if (!token) 
-        return res.status(401).send({ auth: false, message: 'Token não informado.' })
+    if (!token) return res.status(401).send({ auth: false, message: 'Token não informado.' })
     
     jwt.verify(token, process.env.SECRET_JWT_KEY, function(err, decoded) { 
-        if (err) 
-            return res.status(500).send({ auth: false, message: 'Token inválido.' })
+        if (err) return res.status(500).send({ auth: false, message: 'Token inválido.' })
         
         req.userId = decoded.id
         next()

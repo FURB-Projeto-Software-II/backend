@@ -27,8 +27,7 @@ exports.save = async (req, res) => {
 
     if(order == null) order = new Order()
 
-    console.log(req.body)
-    order.id_client = req.body.id_client || order.id_client
+    order.id_client = req.userId
     order.id_storage = req.body.id_storage || order.id_storage
     order.id_category = req.body.id_category || order.id_category
     order.id_adress_delivery = req.body.id_adress_delivery || order.id_adress_delivery
@@ -47,5 +46,22 @@ exports.delete = async (req, res) => {
     await Order.deleteOne({ _id: req.params.id})
 
     res.send({})
+
+}
+
+exports.received = async (req, res) => {
+
+    const order = await Order.findById(req.params.id)
+
+    if (order == null) return res.status(402).send("Ordem nao encontrada")
+    if (order.id_client != req.userId) return res.status(401).send("Usuário inválido")
+    if (order.recived) return res.status(402).send("Entrega ja realizada")
+
+    order.recived = true
+    order.recive_date = Date.now()
+
+    order.save()
+
+    res.status(200).send("Entrega realizada com sucesso!")
 
 }

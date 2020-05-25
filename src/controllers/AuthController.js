@@ -7,6 +7,8 @@ requireDir("./../models")
 
 const User = mongoose.model("User")
 
+const expiresTime = 3600 // 1 hour 
+
 const findUserByEmail = async (email) => {
     const users = await User.find({
         email, 
@@ -14,6 +16,8 @@ const findUserByEmail = async (email) => {
 
     return typeof users[0] == "undefined" ? null : users[0]
 }
+
+const generateToken = user_id => jwt.sign({ user_id }, process.env.SECRET_JWT_KEY, { expiresIn: expiresTime })
 
 exports.login = async (req, res) => {
     try{
@@ -25,22 +29,18 @@ exports.login = async (req, res) => {
         })
     
         if(users.length == 0) {
-            res.status(401).send("E-mail ou senha incorretos1")
+            res.status(401).send("E-mail ou senha incorretos")
             return
         }
 
         const user = users[0]
     
         if(!passwordHash.verify(password, user.password)) {
-            res.status(401).send("E-mail ou senha incorretos2")
+            res.status(401).send("E-mail ou senha incorretos")
             return 
         }
-
-        const id = user.id
     
-        const token = jwt.sign({ id }, process.env.SECRET_JWT_KEY, { 
-            expiresIn: 3600 // 1 hour 
-        }); 
+        const token = generateToken(user.id)
     
         res.status(200).send({ auth: true, token })
     } catch (e) {
@@ -63,9 +63,7 @@ exports.register = async (req, res) => {
     
         let user = await User.create({ email, password, name, cpf, cnpj })
     
-        const token = jwt.sign({ id: user.id }, process.env.SECRET_JWT_KEY, { 
-            expiresIn: 3600 // 1 hour 
-        }); 
+        const token = generateToken(user.id)
     
         res.status(201).send({ auth: true, token })
     } catch (e) {

@@ -5,6 +5,12 @@ const CategorySchema = new mongoose.Schema({
 		type: String,
 		require: true,
 	},
+    weight: {
+        type: String,
+    },
+    size: {
+        type: String,
+    },
 })
 
 mongoose.model("Category", CategorySchema)
