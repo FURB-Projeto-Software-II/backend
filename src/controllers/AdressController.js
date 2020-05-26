@@ -36,6 +36,8 @@ exports.save = async (req, res) => {
     adress.street = req.body.street || adress.street
     adress.number = req.body.number || adress.number
     adress.complement = req.body.complement || adress.complement
+    adress.lat = req.body.lat || adress.lat
+    adress.lng = req.body.lng || adress.lng
 
     user.adresses = user.adresses.map(item => {
         if(item._id == adress._id) return adress

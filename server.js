@@ -12,6 +12,7 @@ const UserController = require("./src/controllers/UserController")
 const AdressController = require("./src/controllers/AdressController")
 const CategoryController = require("./src/controllers/CategoryController")
 const OrderController = require("./src/controllers/OrderController")
+const StorageController = require("./src/controllers/StorageController")
 
 //app.use(cors)
 app.use(bodyParser.urlencoded({ extended: true }))
@@ -26,10 +27,14 @@ app.get("/", (req, res) => res.send("Ola Mundo"))
 
 // AUTH ROTES
 app.post("/auth/login", AuthController.login)
-app.post("/auth/register", AuthController.register)
+app.post("/auth/client/register", AuthController.registerClient)
+app.post("/auth/storage/register", AuthController.registerStorage)
 
 // USER ROTES
 app.get("/user", verifyJWT, UserController.get)
+
+app.get("/storages", verifyJWT, StorageController.get)
+app.get("/storages/nearby", verifyJWT, StorageController.nearby)
 
 // ADRESS ROTES
 app.get("/user/adress", verifyJWT, AdressController.list)
@@ -66,7 +71,7 @@ function verifyJWT(req, res, next) {
     jwt.verify(token, process.env.SECRET_JWT_KEY, function(err, decoded) { 
         if (err) return res.status(500).send({ auth: false, message: 'Token inválido.' })
         
-        req.userId = decoded.id
+        req.userId = decoded.id || decoded.user_id
         next()
     })
 }   

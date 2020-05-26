@@ -19,6 +19,32 @@ const findUserByEmail = async (email) => {
 
 const generateToken = user_id => jwt.sign({ user_id }, process.env.SECRET_JWT_KEY, { expiresIn: expiresTime })
 
+const register = async (req, res, type) => {
+
+    try {
+        let { email, password, name, cpf, cnpj } = req.body
+
+        if(await findUserByEmail(email) != null) {
+            res.status(502).send("E-mail ja cadastrado")
+            return
+        } 
+    
+        password = passwordHash.generate(password)
+
+        let user = await User.create({ email, password, name, cpf, cnpj, type })
+    
+        const token = generateToken(user.id)
+
+        res.status(201).send({ auth: true, token })
+    } catch (e) {
+        res.status(500).send(`Aconteceu algum erro`)
+    }
+}
+
+exports.registerClient = async (req, res) => register(req, res, 0)
+
+exports.registerStorage = async (req, res) => register(req, res, 1)
+
 exports.login = async (req, res) => {
     try{
 
@@ -45,29 +71,6 @@ exports.login = async (req, res) => {
         res.status(200).send({ auth: true, token })
     } catch (e) {
         res.status(500).send("Alguma coisa deu errado")
-    }
-
-}
-
-exports.register = async (req, res) => {
-
-    try {
-        let { email, password, name, cpf, cnpj } = req.body
-
-        if(await findUserByEmail(email) != null) {
-            res.status(502).send("E-mail ja cadastrado")
-            return
-        } 
-    
-        password = passwordHash.generate(password)
-    
-        let user = await User.create({ email, password, name, cpf, cnpj })
-    
-        const token = generateToken(user.id)
-    
-        res.status(201).send({ auth: true, token })
-    } catch (e) {
-        res.status(500).send(`Aconteceu algum erro`)
     }
 
 }

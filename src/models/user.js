@@ -22,6 +22,12 @@ const AdressSchema = new mongoose.Schema({
 	complement: {
 		type: String,
 	},
+	lat: {
+		type: String,
+	},
+	lng: {
+		type: String,
+	},
 })
 
 mongoose.model("Adress", AdressSchema)
@@ -45,6 +51,14 @@ const UserSchema = new mongoose.Schema({
 	},
 	cnpj: {
 		type: String,
+		require: true,
+	},
+	type: {
+		type: Number,
+		require: true,
+	},
+	distance: {
+		type: Number,
 		require: true,
 	},
 	adresses: [
