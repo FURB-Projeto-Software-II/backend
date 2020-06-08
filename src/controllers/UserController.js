@@ -15,3 +15,13 @@ exports.get = async (req, res) => {
         res.status(500).send("Alguma coisa deu errado")
     }
 }
+
+exports.getById = async (req, res) => {
+    try{
+        const user = await User.findById(req.params.id)
+        const { name, email } = user
+	    res.send({ name, email })
+    } catch (e) {
+        res.status(500).send("Alguma coisa deu errado")
+    }
+}

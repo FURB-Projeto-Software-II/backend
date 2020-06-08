@@ -25,11 +25,14 @@ const OrderSchema = new mongoose.Schema({
     size: {
         type: String,
     },
-    recived: {
-        type: Boolean,
-        default: false,
+    status: {
+        type: Number,
+        default: 0,
     },
     recive_date: {
+        type: Date,
+    },
+    delivery_date: {
         type: Date,
     },
 })

@@ -28,6 +28,10 @@ const AdressSchema = new mongoose.Schema({
 	lng: {
 		type: String,
 	},
+	primary: {
+		type: Boolean,
+		default: false,
+	}
 })
 
 mongoose.model("Adress", AdressSchema)

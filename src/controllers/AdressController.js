@@ -6,6 +6,8 @@ requireDir("./../models")
 const User = mongoose.model("User")
 const Adress = mongoose.model("Adress")
 
+const removeNulls = adresses => adresses.filter(item => item != null)
+
 exports.list = async (req, res) => {
     const user = await User.findById(req.userId)
     res.send(user.adresses)
@@ -13,21 +15,26 @@ exports.list = async (req, res) => {
 
 exports.get = async (req, res) => {
     const user = await User.findById(req.userId)
-    res.send(user.adresses.find(adress => adress._id = req.params.id))
+    const adresses = removeNulls(user.adresses)
+    res.send(adresses.find(adress => adress._id = req.params.id))
 }
 
 exports.save = async (req, res) => {
     
     let user = await User.findById(req.userId)
 
-    user.adresses = user.adresses.filter(item => item != null)
+    user.adresses = removeNulls(user.adresses)
+
+    const first = user.adresses.length == 0
     
-    let adress = user.adresses.find(adress => adress._id = req.params.id)
+    let adress = user.adresses.find(adress => adress._id == req.params.id)
 
     if(typeof adress == "undefined") { 
         adress = new Adress()
         user.adresses.push(adress)
     }
+
+    adress.primary = first
 
     adress.zipcode = req.body.zipcode || adress.zipcode
     adress.state = req.body.state || adress.state
@@ -54,11 +61,32 @@ exports.delete = async (req, res) => {
 
     let user = await User.findById(req.userId)
 
-    user.adresses = user.adresses.filter(item => item != null)
+    user.adresses = removeNulls(user.adresses)
     user.adresses = user.adresses.filter(item => item._id != req.params.id)
 
     await user.save()
 
     res.send({})
+
+}
+
+exports.setAsPrimary = async (req, res) => {
+    
+    let user = await User.findById(req.userId)
+
+    user.adresses = removeNulls(user.adresses)
+    
+    let adress = user.adresses.find(adress => adress._id == req.params.id)
+
+    if(typeof adress == "undefined") return res.send({})
+
+    user.adresses = user.adresses.map(item => {
+        item.primary = item._id == req.params.id
+        return item
+    })
+
+    await user.save()
+
+    res.send(adress)
 
 }

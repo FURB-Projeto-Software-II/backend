@@ -2,7 +2,7 @@ const express = require("express")
 const bodyParser = require("body-parser")
 const mongoose = require("mongoose")
 const jwt = require('jsonwebtoken')
-const cors = require('cors')
+//const cors = require('cors')
 require('dotenv').config()
 
 const app = express()
@@ -32,6 +32,7 @@ app.post("/auth/storage/register", AuthController.registerStorage)
 
 // USER ROTES
 app.get("/user", verifyJWT, UserController.get)
+app.get("/user/:id", verifyJWT, UserController.getById)
 
 app.get("/storages", verifyJWT, StorageController.get)
 app.get("/storages/nearby", verifyJWT, StorageController.nearby)
@@ -42,6 +43,7 @@ app.get("/user/adress/:id", verifyJWT, AdressController.get)
 app.post("/user/adress", verifyJWT, AdressController.save)
 app.put("/user/adress/:id", verifyJWT, AdressController.save)
 app.delete("/user/adress/:id", verifyJWT, AdressController.delete)
+app.put("/user/adress/set-as-primary/:id", verifyJWT, AdressController.setAsPrimary)
 
 // CATEGORY ROTES
 app.get("/category", verifyJWT, CategoryController.list)
@@ -56,7 +58,10 @@ app.get("/order/:id", verifyJWT, OrderController.get)
 app.post("/order/", verifyJWT, OrderController.save)
 app.put("/order/:id", verifyJWT, OrderController.save)
 app.delete("/order/:id", verifyJWT, OrderController.delete)
+app.get("/order/received", verifyJWT, OrderController.getReceived)
+app.get("/order/open", verifyJWT, OrderController.getOpen)
 app.put("/order/received/:id", verifyJWT, OrderController.received)
+app.put("/order/delivered/:id", verifyJWT, OrderController.delivered)
 
 // Global error handler - route handlers/middlewares which throw end up here
 app.use((err, req, res, next) => {

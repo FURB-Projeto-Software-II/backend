@@ -8,7 +8,25 @@ const User = mongoose.model("User")
 const Adress = mongoose.model("Adress")
 
 exports.list = async (req, res) => {
-    const order = await Order.find()
+    const order = await Order.find({
+        id_client: req.userId
+    })
+    res.send(order)
+}
+
+exports.getOpen = async (req, res) => {
+    const order = await Order.find({
+        id_client: req.userId,
+        received: false
+    })
+    res.send(order)
+}
+
+exports.getReceived = async (req, res) => {
+    const order = await Order.find({
+        id_client: req.userId,
+        received: true
+    })
     res.send(order)
 }
 
@@ -55,10 +73,27 @@ exports.received = async (req, res) => {
 
     if (order == null) return res.status(402).send("Ordem nao encontrada")
     if (order.id_client != req.userId) return res.status(401).send("Usuário inválido")
-    if (order.recived) return res.status(402).send("Entrega ja realizada")
+    if (order.status == 1) return res.status(402).send("Ordem ja recebida")
 
-    order.recived = true
+    order.status = 1
     order.recive_date = Date.now()
+
+    order.save()
+
+    res.status(200).send("Ordem recebida!")
+
+}
+
+exports.delivered = async (req, res) => {
+
+    const order = await Order.findById(req.params.id)
+
+    if (order == null) return res.status(402).send("Ordem nao encontrada")
+    if (order.id_client != req.userId) return res.status(401).send("Usuário inválido")
+    if (order.status == 2) return res.status(402).send("Entrega ja realizada")
+
+    order.status = 2
+    order.delivery_date = Date.now()
 
     order.save()
 
