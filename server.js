@@ -42,8 +42,8 @@ app.get("/user/adress", verifyJWT, AdressController.list)
 app.get("/user/adress/:id", verifyJWT, AdressController.get)
 app.post("/user/adress", verifyJWT, AdressController.save)
 app.put("/user/adress/:id", verifyJWT, AdressController.save)
-app.delete("/user/adress/:id", verifyJWT, AdressController.delete)
 app.put("/user/adress/set-as-primary/:id", verifyJWT, AdressController.setAsPrimary)
+app.delete("/user/adress/:id", verifyJWT, AdressController.delete)
 
 // CATEGORY ROTES
 app.get("/category", verifyJWT, CategoryController.list)
