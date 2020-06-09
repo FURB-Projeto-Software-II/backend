@@ -13,6 +13,7 @@ exports.list = async (req, res) => {
     const filter = (user.type == 1) ? { id_storage: req.userId } : { id_client: req.userId }
 
     const order = await Order.find(filter)
+    
     res.send(order)
 }
 

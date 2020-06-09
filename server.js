@@ -30,10 +30,7 @@ app.post("/auth/login", AuthController.login)
 app.post("/auth/client/register", AuthController.registerClient)
 app.post("/auth/storage/register", AuthController.registerStorage)
 
-// USER ROTES
-app.get("/user", verifyJWT, UserController.get)
-app.get("/user/:id", verifyJWT, UserController.getById)
-
+// STORAGES ROTES
 app.get("/storages", verifyJWT, StorageController.get)
 app.get("/storages/nearby", verifyJWT, StorageController.nearby)
 
@@ -44,6 +41,10 @@ app.post("/user/adress", verifyJWT, AdressController.save)
 app.put("/user/adress/:id", verifyJWT, AdressController.save)
 app.put("/user/adress/set-as-primary/:id", verifyJWT, AdressController.setAsPrimary)
 app.delete("/user/adress/:id", verifyJWT, AdressController.delete)
+
+// USER ROTES
+app.get("/user", verifyJWT, UserController.get)
+app.get("/user/:id", verifyJWT, UserController.getById)
 
 // CATEGORY ROTES
 app.get("/category", verifyJWT, CategoryController.list)
