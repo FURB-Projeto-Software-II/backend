@@ -8,9 +8,11 @@ const User = mongoose.model("User")
 const Adress = mongoose.model("Adress")
 
 exports.list = async (req, res) => {
-    const order = await Order.find({
-        id_client: req.userId
-    })
+    const user = await User.findById(req.userId)
+
+    const filter = (user.type == 1) ? { id_storage: req.userId } : { id_client: req.userId }
+
+    const order = await Order.find(filter)
     res.send(order)
 }
 
