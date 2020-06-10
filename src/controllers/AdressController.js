@@ -14,7 +14,7 @@ exports.list = async (req, res) => {
 }
 
 exports.get = async (req, res) => {
-    const user = await User.findById(req.userId || req.params.user_id)
+    const user = await User.findById(req.body.user_id || req.userId)
     const adresses = removeNulls(user.adresses)
     res.send(adresses.find(adress => adress._id = req.params.id))
 }
