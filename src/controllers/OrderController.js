@@ -6,6 +6,7 @@ requireDir("./../models")
 const Order = mongoose.model("Order")
 const User = mongoose.model("User")
 const Adress = mongoose.model("Adress")
+const Category = mongoose.model("Category")
 
 exports.list = async (req, res) => {
     const user = await User.findById(req.userId)
@@ -46,7 +47,10 @@ exports.save = async (req, res) => {
     
     let order = await Order.findById(req.params.id)
 
-    if(order == null) order = new Order()
+    const category = await Category.findById(req.body.id_category)
+    if (category == null) return res.status(402).send("Categoria não encontrada!")
+
+    if (order == null) order = new Order()
 
     order.id_client = req.userId
     order.id_storage = req.body.id_storage || order.id_storage
@@ -55,6 +59,7 @@ exports.save = async (req, res) => {
     order.description = req.body.description || order.description
     order.weight = req.body.weight || order.weight
     order.size = req.body.size || order.size
+    order.price = category.price
 
     await order.save()
     

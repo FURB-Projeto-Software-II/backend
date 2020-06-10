@@ -5,11 +5,11 @@ const CategorySchema = new mongoose.Schema({
 		type: String,
 		require: true,
 	},
-    weight: {
+    description: {
         type: String,
     },
-    size: {
-        type: String,
+    price: {
+        type: Number,
     },
 })
 

@@ -20,8 +20,8 @@ exports.save = async (req, res) => {
     if(category == null) category = new Category()
 
     category.name = req.body.name || category.name
-    category.weight = req.body.weight || category.weight
-    category.size = req.body.size || category.size
+    category.description = req.body.description || category.description
+    category.price = req.body.price || category.price
 
     await category.save()
     
