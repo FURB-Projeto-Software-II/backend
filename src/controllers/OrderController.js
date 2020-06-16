@@ -8,14 +8,23 @@ const User = mongoose.model("User")
 const Adress = mongoose.model("Adress")
 const Category = mongoose.model("Category")
 
+const buildOrderData = async (order) => {
+    let storage = await User.findById(order.id_storage).select("name adresses")
+    let client = await User.findById(order.id_client).select("name adresses")
+    const category = await Category.findById(order.id_category).select("name")
+    const adress = client.adresses.find(adress => adress.id = order.id_adress_delivery)
+    client.adresses = undefined
+    return { order, client, storage, category, adress }
+}
+
 exports.list = async (req, res) => {
     const user = await User.findById(req.userId)
 
     const filter = (user.type == 1) ? { id_storage: req.userId } : { id_client: req.userId }
 
-    const order = await Order.find(filter)
+    const orders = await Order.find(filter)
     
-    res.send(order)
+    res.send(orders)
 }
 
 exports.getOpen = async (req, res) => {
@@ -37,7 +46,7 @@ exports.getReceived = async (req, res) => {
 exports.get = async (req, res) => {
     try{
         const order = await Order.findById(req.params.id)
-	    res.send(order)
+	    res.send(await buildOrderData(order))
     } catch (e) {
         res.status(500).send("Alguma coisa deu errado")
     }
