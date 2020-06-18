@@ -32,7 +32,7 @@ const OrderSchema = new mongoose.Schema({
         type: Number,
         default: 0,
     },
-    recive_date: {
+    received_date: {
         type: Date,
     },
     delivery_date: {

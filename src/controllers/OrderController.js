@@ -23,7 +23,9 @@ exports.list = async (req, res) => {
     const filter = (user.type == 1) ? { id_storage: req.userId } : { id_client: req.userId }
 
     const orders = await Order.find(filter)
-    
+
+    orders.forEach(async (e) => await calculatePriceAndSave(e))
+
     res.send(orders)
 }
 
@@ -44,16 +46,17 @@ exports.getReceived = async (req, res) => {
 }
 
 exports.get = async (req, res) => {
-    try{
+    try {
         const order = await Order.findById(req.params.id)
-	    res.send(await buildOrderData(order))
+        await calculatePriceAndSave(order)
+        res.send(await buildOrderData(order))
     } catch (e) {
         res.status(500).send("Alguma coisa deu errado")
     }
 }
 
 exports.save = async (req, res) => {
-    
+
     let order = await Order.findById(req.params.id)
 
     const category = await Category.findById(req.body.id_category)
@@ -68,17 +71,17 @@ exports.save = async (req, res) => {
     order.description = req.body.description || order.description
     order.weight = req.body.weight || order.weight
     order.size = req.body.size || order.size
-    order.price = category.price
+    order.price = await calculatePrice(order)
 
     await order.save()
-    
+
     res.send(order)
-    
+
 }
 
 exports.delete = async (req, res) => {
 
-    await Order.deleteOne({ _id: req.params.id})
+    await Order.deleteOne({ _id: req.params.id })
 
     res.send({})
 
@@ -93,7 +96,7 @@ exports.received = async (req, res) => {
     if (order.status == 1) return res.status(402).send("Ordem ja recebida")
 
     order.status = 1
-    order.recive_date = Date.now()
+    order.received_date = Date.now()
 
     order.save()
 
@@ -116,4 +119,34 @@ exports.delivered = async (req, res) => {
 
     res.status(200).send("Entrega realizada com sucesso!")
 
+}
+
+const calculatePrice = async (order) => {
+    const category = await Category.findById(order.id_category)
+    if (category == null) {
+        return undefined
+    }
+
+    if (order.received_date === undefined) return undefined
+
+    const diff = date_diff_indays(order.received_date, new Date(Date.now()))
+
+
+    if (diff <= 5) {
+        return category.price
+    }
+    return category.price + ((diff - 5) * (category.price * 0.1))
+}
+
+const calculatePriceAndSave = async (order) => {
+    order.price = await calculatePrice(order)
+    await order.save()
+}
+
+const date_diff_indays = (dat1, dat2) => {
+    let diff = (new Date(dat2) - new Date(dat1)) / (1000 * 60 * 60 * 24)
+    if (diff - Math.floor(diff) > 0) {
+        diff++
+    }
+    return diff
 }
