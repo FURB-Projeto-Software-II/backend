@@ -9,8 +9,8 @@ const Adress = mongoose.model("Adress")
 exports.get = async (req, res) => {
     try{
         const user = await User.findById(req.userId)
-        const { name, email } = user
-	    res.send({ name, email })
+        const { name, email, lat, lng } = user
+	    res.send({ name, email, lat, lng })
     } catch (e) {
         res.status(500).send("Alguma coisa deu errado")
     }
@@ -19,8 +19,8 @@ exports.get = async (req, res) => {
 exports.getById = async (req, res) => {
     try{
         const user = await User.findById(req.params.id)
-        const { name, email } = user
-	    res.send({ name, email })
+        const { name, email, lat, lng } = user
+	    res.send({ name, email, lat, lng })
     } catch (e) {
         res.status(500).send("Alguma coisa deu errado")
     }
