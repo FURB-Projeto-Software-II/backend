@@ -122,12 +122,13 @@ exports.delivered = async (req, res) => {
 }
 
 const calculatePrice = async (order) => {
+    if (order === undefined || order == null) console.log('COCO')
     const category = await Category.findById(order.id_category)
     if (category == null) {
         return undefined
     }
 
-    if (order.received_date === undefined) return undefined
+    if (order.received_date === undefined) return category.price
 
     const diff = date_diff_indays(order.received_date, new Date(Date.now()))
 
