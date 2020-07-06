@@ -92,7 +92,7 @@ exports.received = async (req, res) => {
     const order = await Order.findById(req.params.id)
 
     if (order == null) return res.status(402).send("Ordem nao encontrada")
-    if (order.id_client != req.userId) return res.status(401).send("Usuário inválido")
+    if (order.id_client != req.userId && order.id_storage != req.userId) return res.status(401).send("Usuário inválido")
     if (order.status == 1) return res.status(402).send("Ordem ja recebida")
 
     order.status = 1
